@@ -4,7 +4,7 @@ $Amount = ($_REQUEST['Amount']);
 
 $PromptPayQR = new PromptPayQR();
 $PromptPayQR->size = 8;
-$PromptPayQR->id = '0950156860';  //ตั้งค่าบัญชี Promtpay
+$PromptPayQR->id = 'Promptpay ex.09xxxxxxxx';  //ตั้งค่าบัญชี Promtpay
 $PromptPayQR->amount = $Amount;
 ?>
 
