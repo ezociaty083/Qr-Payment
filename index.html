@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Payment</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+
+    <div class="container mt-3 d-flex justify-content-center">
+      <div class="card border border-primary" style="width: 40rem">
+        <div class="card-header bg-white text-center border border-primary">
+          <img alt="" src="img/prompt-pay-logo.png" width="180px;" />
+        </div>
+        <div
+          class="card-body border border-primary border-top-0 border-bottom-0"
+        >
+          <form id="checkout-form" method="POST" action="payment.php">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span
+                  class="input-group-text bg-info text-white"
+                  style="font-size: 0.85em"
+                  >Amount <br />(จำนวนเงิน)</span
+                >
+              </div>
+              <input
+                type="number"
+                class="form-control text-center"
+                name="Amount"
+                id="Amount"
+                aria-label="Amount"
+                placeholder=""
+              />
+              <div class="input-group-append">
+                <span
+                  class="input-group-text bg-info text-white"
+                  style="font-size: 0.85em"
+                  >Baht <br />(บาท)</span
+                >
+              </div>
+            </div>
+            <small
+              class="d-flex justify-content-center text-danger mb-2"
+              id="alertAmount"
+            ></small>
+            <input type="hidden" name="Source" />
+            <div class="d-flex justify-content-center">
+              <button
+                type="submit"
+                class="btn btn-sm btn-outline-primary"
+                id="btn-prompt-pay"
+              >
+                ชำระพร้อมเพย์
+              </button>
+            </div>
+          </form>
+        </div>
+        <div
+          class="card-footer bg-white border border-primary text-primary"
+          style="text-align: center"
+        >
+          * กดชำระพร้อมเพย์ เพื่อสร้าง QR Code สแกนในการทำรายการจ่ายบิล
+        </div>
+      </div>
+    </div>
+    <script src="./vendor/jquery/jquery.js"></script>
+    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.omise.co/omise.js"></script>
+
+    <script>
+      const btnPromptPay = document.querySelector("#btn-prompt-pay");
+      const form = document.querySelector("#checkout-form");
+      const Source = document.querySelector('input[name="Source"]');
+
+     
+      btnPromptPay.addEventListener("click", function (event) {
+        event.preventDefault();
+        $("#alertAmount").html("");
+        var _amount = $("#Amount").val();
+        var c_amount = _amount*100;
+        if (_amount.length == 0) {
+          $("#alertAmount").html(
+            "Please specify the amount! ( กรุณาระบุจำนวนเงิน )"
+          );
+          $("#omiseAmount").focus();
+          return false;
+        }
+
+        Omise.createSource(
+          "promptpay",
+          {
+            amount: c_amount,
+            currency: "THB",
+          },
+          function (statusCode, response) {
+            if (statusCode == "200") {
+              form.Source.value = response.id;
+            }
+            form.submit();
+          }
+        );
+      });
+    </script>
+  </body>
+</html>
